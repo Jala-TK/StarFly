@@ -3,9 +3,6 @@
 import { handleSendMessageSocketIo } from '@/socketio/handleSendMessages';
 import { useEffect, useState } from 'react';
 import { io } from 'socket.io-client';
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import styles from './ChatClient.module.css'
 
 interface ChatClientProps {
   initialMessages: string[];
@@ -44,31 +41,38 @@ const ChatClient = ({ initialMessages }: ChatClientProps) => {
 
   return (
     <div className="flex flex-col h-screen justify-between bg-black text-white">
-      <div className="flex-grow p-4 overflow-y-auto">
+      <div className="flex-grow px-10 py-5 overflow-y-auto">
         {messages.map((msg, index) => (
           <div
             key={index}
-            className={styles.containerMessage}
           >
-            {msg}
+            <div className="chat chat-start">
+              <div className="chat-image avatar">
+                <div className="w-10 rounded-full">
+                  <img
+                    alt="Tailwind CSS chat bubble component"
+                    src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp" />
+                </div>
+              </div>
+              <div className="chat-bubble">
+                {msg}
+              </div>
+            </div>
+
           </div>
         ))}
       </div>
 
-      <div className="p-4 bg-gray-800 flex">
-        <Input
+      <div className="flex items-center justify-center bg-transparent px-10 py-5 border-none" >
+        <input
           type="text"
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder="Digite sua mensagem..."
-          className="flex-grow bg-white text-white placeholder-gray-400 border-none focus:ring-0 focus:outline-none p-2 rounded-l-md"
-        />
-        <Button
-          variant="outline"
-          onClick={sendMessage}
-        >
-          Enviar
-        </Button>
+          className="input input-bordered input-md w-full" />
+        <div>
+          <button className="btn btn-primary" onClick={sendMessage}>Button</button>
+        </div>
       </div>
     </div>
   );
