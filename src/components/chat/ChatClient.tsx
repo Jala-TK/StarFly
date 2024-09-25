@@ -71,7 +71,7 @@ const ChatClient = ({ initialMessages }: ChatClientProps) => {
           placeholder="Digite sua mensagem..."
           className="input input-bordered input-md w-full" />
         <div>
-          <button className="btn btn-primary" onClick={sendMessage}>Button</button>
+          <button className="btn btn-primary" onClick={sendMessage}>Enviar</button>
         </div>
       </div>
     </div>
