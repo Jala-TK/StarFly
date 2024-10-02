@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev:http": "next dev -p 80",
+    "dev": "next dev",
     "build": "next build",
     "start": "npx prisma generate && node server.js"
   },
@@ -19,7 +20,7 @@
     "lucide-react": "^0.441.0",
     "mongodb": "^6.9.0",
     "next": "14.2.12",
-    "next-auth": "^4.24.7",
+    "next-auth": "^4.24.8",
     "nookies": "^2.5.2",
     "react": "^18",
     "react-dom": "^18",
@@ -33,6 +34,7 @@
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "@types/react-router-dom": "^5.3.3",
     "@types/ws": "^8.5.12",
     "autoprefixer": "^10.4.20",
     "daisyui": "^4.12.10",

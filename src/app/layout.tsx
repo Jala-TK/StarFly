@@ -1,10 +1,7 @@
-import type { Metadata } from "next";
+'use client'
 import "./globals.css";
-
-export const metadata: Metadata = {
-  title: "Chat",
-  description: "Chat",
-};
+import { AuthProvider } from '@/contexts/AuthContext';
+import { SessionProvider } from 'next-auth/react';
 
 export default function RootLayout({
   children,
@@ -13,9 +10,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body >
-        {children}
+      <body>
+        <SessionProvider>
+          <AuthProvider>
+            {children}
+          </AuthProvider>
+        </SessionProvider>
       </body>
-    </html >
+    </html>
   );
 }

@@ -1,5 +1,6 @@
-import { fetchServer } from '@/service/fetchServer';
+import { fetchServer } from '@/services/fetchServer';
 import ChatClient from '@/components/chat/ChatClient';
+import { getServerSession } from 'next-auth';
 
 async function getMessages() {
   try {
@@ -19,10 +20,12 @@ async function getMessages() {
 }
 
 const ChatPage = async () => {
+  const session = await getServerSession();
   const initialMessages = await getMessages();
 
   return (
     <div>
+      <h1>Olá, {session?.user?.email}</h1>
       <ChatClient initialMessages={initialMessages} />
     </div>
   );
