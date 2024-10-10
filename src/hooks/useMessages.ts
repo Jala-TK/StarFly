@@ -1,34 +1,11 @@
 import { useState, useEffect } from 'react';
 import { io, Socket } from 'socket.io-client';
 import { createMessage, getAllMessages } from '@/services/messageService';
-import { Message } from '@prisma/client';
-
-interface UseMessagesReturn {
-  messages: MessageWithUser[];
-  sendMessage: (message: string, groupId: string) => void;
-  input: string;
-  setInput: (input: string) => void;
-}
-
-interface SendMessagePayload {
-  groupId: string;
-  message: MessageWithUser;
-  userId: string;
-}
-
-interface MessageWithUser {
-  id: string;
-  content: string;
-  createdAt: Date;
-  userId: string;
-  groupId: string;
-  email: string;
-  user: {
-    name: string;
-    email: string;
-    image: string;
-  };
-}
+import {
+  MessageWithUser,
+  SendMessagePayload,
+  UseMessagesReturn,
+} from '@/utils/types';
 
 export const useMessages = (groupId: string): UseMessagesReturn => {
   const [messages, setMessages] = useState<MessageWithUser[]>([]);
@@ -45,9 +22,9 @@ export const useMessages = (groupId: string): UseMessagesReturn => {
       }
     };
 
-    fetchMessages(); // Carrega as mensagens ao montar o componente
+    fetchMessages();
 
-    const newSocket = io('http://localhost'); // Altere aqui conforme necessário
+    const newSocket = io('http://localhost');
 
     setSocket(newSocket);
 
@@ -63,23 +40,23 @@ export const useMessages = (groupId: string): UseMessagesReturn => {
     });
 
     return () => {
-      newSocket.disconnect(); // Desconecta o socket ao desmontar
+      newSocket.disconnect();
     };
   }, [groupId]);
 
   const sendMessage = async (message: string, groupId: string) => {
     if (message.trim() !== '') {
       try {
-        const newMessage = await createMessage(message, groupId); // Usa o service para enviar a mensagem
+        const newMessage = await createMessage(message, groupId);
         const sendMessage = {
           groupId: groupId,
           message: newMessage,
           userId: newMessage.userId,
         };
         if (socket) {
-          socket.emit('message', sendMessage); // Envia a nova mensagem via Socket.IO
+          socket.emit('message', sendMessage);
         }
-        setInput(''); // Limpa o input
+        setInput('');
       } catch (error) {
         console.error('Erro ao enviar mensagem:', error);
       }
