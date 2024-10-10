@@ -43,27 +43,24 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         password: { label: 'Password', type: 'password' },
       },
       authorize: async (credentials) => {
-        let user = null;
-        let password: string = (credentials.password as string).toString();
-
-        user = await prisma.user.findFirst({
+        const user = await prisma.user.findFirst({
           where: {
             email: credentials.email as string,
           },
         });
 
         if (!user) {
-          throw new Error('User not found.');
+          console.log('User not found:', credentials.email);
+          return null; // Retorne null se o usuário não for encontrado
         }
 
-        // Hash da password usando SHA-256
         const hash = crypto.createHash('sha256');
-        hash.update(password);
+        hash.update(credentials.password as string);
         const hashedPassword = hash.digest('hex');
 
-        // Verifica se a senha é válida
         if (user.password !== hashedPassword) {
-          throw new Error('Invalid password.');
+          console.log('Invalid password for user:', user.email);
+          return null; // Retorne null se a senha for inválida
         }
 
         return user;
@@ -77,14 +74,12 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
   callbacks: {
     async jwt({ token, user }) {
-      // Adiciona o id do usuário ao token JWT
       if (user) {
         token.id = user.id;
       }
       return token;
     },
     async session({ session, token }) {
-      // Adiciona o id do token à sessão
       if (token?.id) {
         session.user.id = token.id as string;
       }

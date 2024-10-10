@@ -30,3 +30,16 @@ export interface UseGroupsReturn {
   loading: boolean;
   error: string | null;
 }
+
+export interface UseMessagesReturn {
+  messages: MessageWithUser[];
+  sendMessage: (message: string, groupId: string) => void;
+  input: string;
+  setInput: (input: string) => void;
+}
+
+export interface SendMessagePayload {
+  groupId: string;
+  message: MessageWithUser;
+  userId: string;
+}
