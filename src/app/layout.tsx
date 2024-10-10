@@ -1,6 +1,5 @@
 'use client'
 import "./globals.css";
-import { AuthProvider } from '@/contexts/AuthContext';
 import { SessionProvider } from 'next-auth/react';
 
 export default function RootLayout({
@@ -10,11 +9,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>
+      <body className="min-h-screen">
         <SessionProvider>
-          <AuthProvider>
-            {children}
-          </AuthProvider>
+          {children}
         </SessionProvider>
       </body>
     </html>
