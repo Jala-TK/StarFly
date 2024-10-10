@@ -1,19 +1,14 @@
-import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
-import { getToken } from 'next-auth/jwt';
+import { auth } from '@/auth';
 
-export async function middleware(request: NextRequest) {
-  const token = await getToken({
-    req: request,
-    secret: process.env.NEXTAUTH_SECRET,
-  });
-
-  if (!token) {
-    return NextResponse.redirect(new URL('/login', request.url));
+export default auth((req) => {
+  if (!req.auth?.user) {
+    const newUrl = new URL('/login', req.nextUrl.origin);
+    return Response.redirect(newUrl);
   }
-  return NextResponse.next();
-}
+});
 
 export const config = {
-  matcher: ['/', '/chat'],
+  matcher: [
+    '/((?!api|_next/static|_next/image|favicon.ico|registro|login|socket.io).*)',
+  ],
 };
