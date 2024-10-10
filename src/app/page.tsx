@@ -1,11 +1,15 @@
-import { redirect } from "next/navigation";
-import { getServerSession } from 'next-auth';
+import type { Metadata } from "next";
+import GroupPage from "@/components/group/GroupPage";
 
-export default async function Home() {
-  const session = await getServerSession();
-  if (session === null) {
-    redirect('/login');
-  } else {
-    redirect('/chat');
-  }
-}
+export const metadata: Metadata = {
+  title: "Star Fly",
+  description: "Star Fly",
+};
+
+
+const Group = () => {
+  return (
+    <GroupPage />
+  );
+};
+export default Group;
