@@ -5,7 +5,7 @@ const { createServer: createHttpsServer } = require('https');
 /* const fs = require('fs'); */
 require('dotenv').config({ path: '.env' });
 const { ioHttps, ioHttp } = require('./servers/websocket/socketServer');
-const dev = process.env.NODE_ENV !== 'production'
+const dev = process.env.NODE_ENV !== 'production';
 
 const app = next({ dev });
 
@@ -28,7 +28,9 @@ app.prepare().then(() => {
     }
   });
 
-  const { PORTHTTP, PORTHTTPS } = process.env
+  const { PORTHTTP, PORTHTTPS } = process.env;
+
+  ioHttp.attach(httpServer);
 
   httpServer.listen(PORTHTTP, (err) => {
     if (err) throw err;
@@ -45,5 +47,4 @@ app.prepare().then(() => {
       console.log(`Iniciando na porta ${PORTHTTPS} (HTTPS)`);
     });
     ioHttps.attach(httpsServer) */
-  ioHttp.attach(httpServer)
 });
