@@ -1,5 +1,5 @@
 import { Group } from '@prisma/client';
-import CreateGroup from './CreateGroup';
+import CreateGroup from '@/components/group/CreateGroup';
 import { GroupWithMessage } from '@/utils/types';
 
 interface SidebarProps {
