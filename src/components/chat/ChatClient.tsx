@@ -1,77 +1,104 @@
+/* eslint-disable @next/next/no-img-element */
 'use client';
 
-import { handleSendMessageSocketIo } from '@/socketio/handleSendMessages';
-import { useEffect, useState } from 'react';
-import { io } from 'socket.io-client';
+import { useEffect, useRef } from 'react';
+import { useMessages } from '@/hooks/useMessages';
+import { format } from 'date-fns';
+import { User } from 'next-auth';
+import { useSession } from "next-auth/react"
 
 interface ChatClientProps {
-  initialMessages: string[];
+  groupId: string;
 }
 
-const ChatClient = ({ initialMessages }: ChatClientProps) => {
-  const [messages, setMessages] = useState<string[]>(initialMessages);
-  const [input, setInput] = useState<string>('');
+interface MessageWithUser {
+  id: string;
+  content: string;
+  createdAt: Date;
+  userId: string;
+  groupId: string;
+  email: string;
+  user: {
+    name: string;
+    email: string;
+    image: string;
+  };
+}
+
+const ChatClient = ({ groupId }: ChatClientProps) => {
+  const { data: session } = useSession();
+  const user = session?.user as User | null;
+  const { messages, sendMessage, input, setInput } = useMessages(groupId);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  const scrollToBottom = () => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView();
+    }
+  };
 
   useEffect(() => {
-    try {
-      const socket = io();
-
-      socket.on("connect", () => {
-        console.log("Connected to Socket.IO server");
-      });
-
-      socket.on("message", (data) => {
-        setMessages((prevMessages) => [...prevMessages, data]);
-      });
-
-      return () => {
-        socket.disconnect();
-      };
-    } catch (err) {
-      console.log(err);
-    }
-  }, []);
-
-  function sendMessage() {
-    if (input.trim() !== '') {
-      handleSendMessageSocketIo(input);
-      setInput('');
-    }
-  }
+    scrollToBottom();
+  }, [messages]);
 
   return (
-    <div className="flex flex-col h-screen justify-between bg-black text-white">
-      <div className="flex-grow px-10 py-5 overflow-y-auto">
-        {messages.map((msg, index) => (
-          <div
-            key={index}
-          >
-            <div className="chat chat-start">
-              <div className="chat-image avatar">
-                <div className="w-10 rounded-full">
-                  <img
-                    alt="Tailwind CSS chat bubble component"
-                    src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp" />
-                </div>
-              </div>
-              <div className="chat-bubble">
-                {msg}
-              </div>
-            </div>
+    <div className="flex flex-col max-h-full">
+      <div className="flex-grow px-10 py-20 overflow-y-auto ">
+        {messages.map((msg: MessageWithUser) => (
+          <div key={msg.id}>
+            <div
+              className={`chat ${msg.email !== user?.email ? 'chat-start' : 'chat-end'}`}
+            >
+              {msg.user.image ? (
 
+                <div className="chat-image avatar">
+                  <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">
+                    <img
+                      alt="User avatar"
+                      src={msg.user.image}
+                    />
+                  </div>
+                </div>
+              ) : (
+                <div className="chat-image">
+                  <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">
+                    <span className="text-lg font-bold text-gray-700">
+                      {msg.user.name ? msg.user.name.split(' ').slice(0, 2).map(namePart => namePart[0].toUpperCase()).join('') : ''}
+                    </span>
+                  </div>
+                </div>
+              )}
+
+              <div className="chat-header">
+                {msg.userId === user?.id ? 'Você ' : msg.email}
+                <time className="text-xs opacity-50">{format(msg.createdAt, 'HH:mm')}</time>
+              </div>
+              <div className="chat-bubble">{msg.content}</div>
+            </div>
           </div>
         ))}
+        <div ref={messagesEndRef} />
       </div>
 
-      <div className="flex items-center justify-center bg-transparent px-10 py-5 border-none" >
-        <input
-          type="text"
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          placeholder="Digite sua mensagem..."
-          className="input input-bordered input-md w-full" />
-        <div>
-          <button className="btn btn-primary" onClick={sendMessage}>Enviar</button>
+      <div className="flex items-center justify-center bg-transparent px-10 py-5 border-none w-full fixed bottom-0 z-10">
+        <div className="relative w-full">
+          <input
+            type="text"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                sendMessage(input, groupId);
+              }
+            }}
+            placeholder="Digite sua mensagem..."
+            className="input input-bordered input-md w-full pr-12"
+          />
+          <button className="absolute right-0 top-0 h-full btn bg-transparent border-none" onClick={() => sendMessage(input, groupId)}>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-send" viewBox="0 0 16 16" transform="rotate(45)">
+              <path d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576zm6.787-8.201L1.591 6.602l4.339 2.76z" />
+            </svg>
+          </button>
         </div>
       </div>
     </div>
