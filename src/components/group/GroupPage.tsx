@@ -18,7 +18,10 @@ const GroupPageComponent: React.FC = () => {
   }, [userGroups, selectedGroup]);
 
   const handleJoinGroup = async (groupId: string) => {
-    await joinGroupById(groupId);
+    const joinedGroup = await joinGroupById(groupId);
+    if (joinedGroup) {
+      handleSelectGroup(joinedGroup);
+    }
   };
 
   const handleSelectGroup = (group: Group) => {

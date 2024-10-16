@@ -1,12 +1,7 @@
 import { Group } from '@prisma/client';
-import { GroupWithMessage } from '@/utils/types';
+import { GroupWithMessage, JoinGroupResponse } from '@/utils/types';
 
 const API_URL = '/api/groups';
-
-interface JoinGroupResponse {
-  message: string;
-  error?: string;
-}
 
 export const createGroup = async (groupName: string): Promise<Group> => {
   try {

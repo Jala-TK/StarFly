@@ -56,10 +56,12 @@ export const POST = auth(async function POST(req: NextRequest & { auth: any }) {
       },
     });
 
-    return NextResponse.json(
-      { message: 'Usuário adicionado ao grupo com sucesso!' },
-      { status: 201 }
-    );
+    const message = {
+      message: 'Usuário adicionado ao grupo com sucesso!',
+      group,
+    };
+
+    return NextResponse.json({ message }, { status: 201 });
   } catch (error) {
     console.error('Erro ao adicionar usuário ao grupo:', error);
     return NextResponse.json(

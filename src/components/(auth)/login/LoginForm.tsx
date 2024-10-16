@@ -84,6 +84,9 @@ const LoginForm: React.FC = () => {
           <button className="btn btn-outline" onClick={() => signIn("github", { redirectTo: "/" })}>
             Login with GitHub
           </button>
+          <div className="flex justify-center mt-4">
+            <a href="/registro" className="link link-primary">Não tem uma conta? Faça o registro aqui</a>
+          </div>
         </div>
       </div>
     </div>
