@@ -24,7 +24,7 @@ export const useMessages = (groupId: string): UseMessagesReturn => {
 
     fetchMessages();
 
-    const newSocket = io('http://localhost');
+    const newSocket = io();
 
     setSocket(newSocket);
 

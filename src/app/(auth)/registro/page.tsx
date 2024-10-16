@@ -6,9 +6,9 @@ export const metadata: Metadata = {
   description: "Registrar um novo usuário",
 };
 
-const LoginPage = () => {
+const RegisterPage = () => {
   return (
     <RegisterForm />
   );
 };
-export default LoginPage;
+export default RegisterPage;

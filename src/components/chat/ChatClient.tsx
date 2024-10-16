@@ -70,7 +70,7 @@ const ChatClient = ({ groupId }: ChatClientProps) => {
               )}
 
               <div className="chat-header">
-                {msg.userId === user?.id ? 'Você ' : msg.email}
+                {msg.userId === user?.id ? 'Você ' : msg.user.name}
                 <time className="text-xs opacity-50">{format(msg.createdAt, 'HH:mm')}</time>
               </div>
               <div className="chat-bubble">{msg.content}</div>
