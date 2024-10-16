@@ -46,6 +46,7 @@ export const useGroups = (): UseGroupsReturn => {
       setGroups((prevGroups) => [...prevGroups, newGroup]);
 
       cache.current.groups = [...cache.current.groups, newGroup];
+      window.location.reload();
     } catch (err: any) {
       setError(err.message || 'Erro ao criar grupo');
     }
