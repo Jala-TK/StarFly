@@ -6,7 +6,11 @@ import {
   getUserGroups,
 } from '@/services/groupService';
 import { Group } from '@prisma/client';
-import { GroupWithMessage, UseGroupsReturn } from '@/utils/types';
+import {
+  GroupWithMessage,
+  JoinGroupResponse,
+  UseGroupsReturn,
+} from '@/utils/types';
 
 export const useGroups = (): UseGroupsReturn => {
   const [groups, setGroups] = useState<Group[]>([]);
@@ -53,14 +57,17 @@ export const useGroups = (): UseGroupsReturn => {
 
   const joinGroupById = useCallback(async (groupId: string) => {
     try {
-      await joinGroup(groupId);
+      const result: JoinGroupResponse = await joinGroup(groupId);
 
       const updatedUserGroups = await getUserGroups();
       setUserGroups(updatedUserGroups);
 
       cache.current.userGroups = updatedUserGroups;
+
+      return result.message.group;
     } catch (err: any) {
       setError(err.message || 'Erro ao entrar no grupo');
+      return null;
     }
   }, []);
 

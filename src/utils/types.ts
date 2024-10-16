@@ -26,7 +26,7 @@ export interface UseGroupsReturn {
   groups: Group[];
   userGroups: GroupWithMessage[];
   createNewGroup: (groupName: string) => Promise<void>;
-  joinGroupById: (groupId: string) => Promise<void>;
+  joinGroupById: (groupId: string) => Promise<Group | null>;
   loading: boolean;
   error: string | null;
 }
@@ -42,4 +42,12 @@ export interface SendMessagePayload {
   groupId: string;
   message: MessageWithUser;
   userId: string;
+}
+
+export interface JoinGroupResponse {
+  message: {
+    message: string;
+    group: Group;
+  };
+  error?: string;
 }
